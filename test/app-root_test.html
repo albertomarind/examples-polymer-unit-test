@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>app-root test</title>
+
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../app-root.html">
+</head>
+
+<body>
+
+  <test-fixture id="BasicTestFixture">
+    <template>
+      <app-root></app-root>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="ChangedPropertyTestFixture">
+    <template>
+      <app-root prop1="new-prop1"></app-root>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('app-root', () => {
+
+      //Con setup esto se ejecuta antes de cada test, tambien se tiene el teardown, que se ejecuta al final de cada test
+      //Para mas informacion aceca de setup, teardown, after y before. Consultar la documentacion de MochaJS
+      setup(() => {
+        stub('app-root', {
+          //Modifica el comportamiento del metodo openDialog que se encuentra dentro del app-root
+          openDialog: () => {
+            console.log('open dialog modificado');
+          }
+        });
+      });
+
+      test('instantiating the element with default properties works', () => {
+        //El fixture nos entrega una instancia limpia de nuestro componente.
+        const element = fixture('BasicTestFixture');
+        assert.equal(element.prop1, 'app-root');
+        const elementShadowRoot = element.shadowRoot;
+        const elementHeader = elementShadowRoot.querySelector('h2');
+        assert.equal(elementHeader.innerHTML, 'Hello app-root!');
+      });
+
+      test('setting a property on the element works', () => {
+        // Create a test fixture
+        const element = fixture('ChangedPropertyTestFixture');
+        assert.equal(element.prop1, 'new-prop1');
+        const elementShadowRoot = element.shadowRoot;
+        const elementHeader = elementShadowRoot.querySelector('h2');
+        assert.equal(elementHeader.innerHTML, 'Hello new-prop1!');
+      });
+
+      test('validate user message success', () => {
+        const element = fixture('BasicTestFixture');
+        let result = element.getUserMessage(1);
+        assert.equal(result, 'success');
+      });
+
+      test('validate user message warning', () => {
+        const element = fixture('BasicTestFixture');
+        let result = element.getUserMessage(2);
+        assert.equal(result, 'warning');
+      });
+
+      test('validate user message error', () => {
+        const element = fixture('BasicTestFixture');
+        let result = element.getUserMessage(3);
+        assert.equal(result, 'error');
+      });
+
+      test('validate property show', () => {
+        const element = fixture('BasicTestFixture');
+        // console.log(element.show);
+        element.setModifyVisibility();
+        assert.isFalse(element.show, 'no es false');
+      });
+
+      test('validate close dialog', () => {
+        const element = fixture('BasicTestFixture');
+        // let spyCloseDialog = sinon.spy(window, 'alert');
+        //con sinon.spy('objeto que contiene al metodo','nombre del metodo a observar') podemos
+        //estar al pendiente de la ejecucion de algun método.
+        let spyCloseDialog = sinon.spy(element, 'closeDialog');
+        element.setModifyVisibility();
+
+        console.log(spyCloseDialog.called);
+        assert.isTrue(spyCloseDialog.called);
+        assert.isFalse(element.show, 'no es false');
+      });
+
+      //No olvidar el "done" para operaciones asincronas
+      test('validate emit value event', (done) => {
+        const element = fixture('BasicTestFixture');
+        element.addEventListener('send-value', (event) => {
+          assert.equal(event.detail.value, 'hello world');
+          done();
+        });
+        element.emitValue();
+      });
+
+      //Evaluar la ejecucion de un custom event
+      //No olvidar el "done" para operaciones asincronas
+      test('validate emit value event with stub', (done) => {
+        const element = fixture('BasicTestFixture');
+        element.addEventListener('send-value', (event) => {
+          assert.equal(event.detail.value, 'hello world');
+          done();
+        });
+        element.emitValue();
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

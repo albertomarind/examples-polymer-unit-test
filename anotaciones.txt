@@ -1,0 +1,21 @@
+Ejecutar test
+polymer test -l chrome -p
+o tambien
+polymer serve 
+y luego entrar a 
+localhost:8081/components/my-el/test/my-el_test.html
+
+Documentacion:
+Ejemplos de polymer
+https://polymer-library.polymer-project.org/2.0/docs/tools/tests
+
+https://www.npmjs.com/package/web-component-tester
+
+Documentacion de asserts para Chai
+https://www.chaijs.com/api/assert/
+
+Documentacion de stubs y spy con Sinon
+https://sinonjs.org/releases/v10.0.0/spies/
+
+https://sinonjs.org/releases/v10.0.0/stubs/
+

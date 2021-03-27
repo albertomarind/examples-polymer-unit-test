@@ -1,0 +1,84 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="app-root">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `app-root`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class AppRoot extends Polymer.Element {
+      static get is() {
+        return 'app-root';
+      }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'app-root'
+          },
+          show: {
+            type: Boolean,
+            observer: '__observerShow'
+          }
+        };
+      }
+
+      __observerShow(newValue, oldValue) {
+        if (!newValue) {
+          this.closeDialog();
+          // alert('dialog cerrado');
+        }
+
+      }
+
+
+      getUserMessage(value) {
+        if (value === 1) {
+          return 'success';
+        } else if (value === 2) {
+          return 'warning';
+        } else {
+          return 'error';
+        }
+      }
+
+      setModifyVisibility() {
+        this.set('show', false);
+      }
+
+      closeDialog() {
+        console.log('close dialog');
+      }
+
+      emitValue() {
+        this.openDialog();
+        this.dispatchEvent(new CustomEvent('send-value', {
+          detail: {
+            value: 'hello world'
+          }
+        }));
+        
+      }
+
+      openDialog() {
+        console.log('open dialog 123');
+      }
+
+    }
+
+    window.customElements.define(AppRoot.is, AppRoot);
+  </script>
+</dom-module>
